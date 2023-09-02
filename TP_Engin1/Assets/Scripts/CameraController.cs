@@ -50,9 +50,9 @@ public class CameraController : MonoBehaviour
         if (Input.mouseScrollDelta.y != 0)
         {
             //TODO: Faire une vérification selon la distance la plus proche ou la plus éloignée
-            //Que je souhaite entre ma caméra et mon objet
+                //Que je souhaite entre ma caméra et mon objet
 
-            //TODO: Lerp plutôt que d'effectuer immédiatement la translation
+            //TODO: Lerp plutôt que d'effectuer immédiatement la translation de la caméra
             transform.Translate(Vector3.forward * Input.mouseScrollDelta.y, Space.Self);
         }
     }
@@ -75,7 +75,7 @@ public class CameraController : MonoBehaviour
         }
         else
         {
-            //J'en ai pas
+            //Je n'en ai pas
             Debug.DrawRay(m_objectToLookAt.position, vecteurDiff, Color.white);
         }
     }
