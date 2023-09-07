@@ -680,7 +680,7 @@ GameObject:
   - component: {fileID: 859481461}
   - component: {fileID: 859481462}
   m_Layer: 9
-  m_Name: FloorColliderTrigger
+  m_Name: FloorTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1125,7 +1125,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <AccelerationValue>k__BackingField: 40
   <MaxVelocity>k__BackingField: 8
-  <JumpIntensity>k__BackingField: 1000
+  <JumpIntensity>k__BackingField: 500
+  m_floorTrigger: {fileID: 859481462}
 --- !u!54 &1697154395
 Rigidbody:
   m_ObjectHideFlags: 0

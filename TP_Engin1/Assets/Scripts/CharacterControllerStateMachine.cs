@@ -13,6 +13,8 @@ public class CharacterControllerStateMachine : MonoBehaviour
     [field: SerializeField]
     public float JumpIntensity { get; private set; } = 1000.0f;
 
+    [SerializeField]
+    private CharacterFloorTrigger m_floorTrigger;
     private CharacterState m_currentState;
     private List<CharacterState> m_possibleStates;
 
@@ -74,5 +76,10 @@ public class CharacterControllerStateMachine : MonoBehaviour
                 return;
             }
         }
+    }
+
+    public bool IsInContactWithFloor()
+    {
+        return m_floorTrigger.IsOnFloor;
     }
 }

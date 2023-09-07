@@ -2,12 +2,16 @@ using UnityEngine;
 
 public class JumpState : CharacterState
 {
+    private const float STATE_EXIT_TIMER = 0.2f;
+    private float m_currentStateTimer = 0.0f;
+
     public override void OnEnter()
     {
         Debug.Log("Enter state: JumpState\n");
 
         //Effectuer le saut
         m_stateMachine.RB.AddForce(Vector3.up * m_stateMachine.JumpIntensity, ForceMode.Acceleration);
+        m_currentStateTimer = STATE_EXIT_TIMER;
     }
 
     public override void OnExit()
@@ -21,6 +25,7 @@ public class JumpState : CharacterState
 
     public override void OnUpdate()
     {
+        m_currentStateTimer -= Time.deltaTime;
     }
 
     public override bool CanEnter()
@@ -31,6 +36,6 @@ public class JumpState : CharacterState
 
     public override bool CanExit()
     {
-        return true;
+        return m_currentStateTimer <= 0;
     }
 }

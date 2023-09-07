@@ -42,7 +42,7 @@ public class FreeState : CharacterState
     public override bool CanEnter()
     {
         //Je ne peux entrer dans le FreeState que si je touche le sol
-        return true;
+        return m_stateMachine.IsInContactWithFloor();
     }
 
     public override bool CanExit()
