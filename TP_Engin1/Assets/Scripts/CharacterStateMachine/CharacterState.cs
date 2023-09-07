@@ -1,4 +1,4 @@
-public class CharacterState : IState
+public abstract class CharacterState : IState
 {
     protected CharacterControllerStateMachine m_stateMachine;
 
@@ -21,5 +21,15 @@ public class CharacterState : IState
 
     public virtual void OnUpdate()
     {
+    }
+
+    public virtual bool CanEnter()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public virtual bool CanExit()
+    {
+        throw new System.NotImplementedException();
     }
 }
