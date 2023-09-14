@@ -26,6 +26,9 @@ public class FreeState : CharacterState
             m_stateMachine.RB.velocity *= m_stateMachine.MaxVelocity;
         }
 
+        float forwardComponent = Vector3.Dot(m_stateMachine.RB.velocity, vectorOnFloor);
+        m_stateMachine.UpdateAnimatorValues(new Vector2(0, forwardComponent));
+
         //TODO 31 AOÛT:
         //Appliquer les déplacements relatifs à la caméra dans les 3 autres directions
         //Avoir des vitesses de déplacements maximales différentes vers les côtés et vers l'arrière
