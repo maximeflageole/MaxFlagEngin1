@@ -20,7 +20,7 @@ public class HitState : CharacterState
     {
     }
 
-    public override bool CanEnter()
+    public override bool CanEnter(IState currentState)
     {
         return false;
     }

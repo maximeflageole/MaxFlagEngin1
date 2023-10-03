@@ -15,40 +15,15 @@ public class FreeState : CharacterState
     {
         FixedUpdateRotateWithCamera();
 
-         var inputVector2 = Vector2.zero;
-        GetInputs(ref inputVector2);
-        m_stateMachine.CurrentDirectionalInputs = inputVector2;
-
-        if (inputVector2 ==  Vector2.zero)
+        if (m_stateMachine.CurrentDirectionalInputs ==  Vector2.zero)
         {
             FixedUpdateQuickDeceleration();
             return;
         }
 
-        ApplyMovementsOnFloorFU(inputVector2);
+        ApplyMovementsOnFloorFU(m_stateMachine.CurrentDirectionalInputs);
     }
-    
-    private void GetInputs(ref Vector2 inputVector2)
-    {
-        //Pourquoi est-ce que cette méthode s'appelle Get même si elle n'a pas de valeur de retour?
-        // Ce n'est pas une erreur!
-        if (Input.GetKey(KeyCode.W))
-        {
-            inputVector2 += Vector2.up;
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            inputVector2 += Vector2.down;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            inputVector2 += Vector2.left;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            inputVector2 += Vector2.right;
-        }
-    }
+   
 
     private void ApplyMovementsOnFloorFU(Vector2 inputVector2)
     {
@@ -86,7 +61,7 @@ public class FreeState : CharacterState
         Debug.Log("Exit state: FreeState\n");
     }
 
-    public override bool CanEnter()
+    public override bool CanEnter(IState currentState)
     {
         //Je ne peux entrer dans le FreeState que si je touche le sol
         return m_stateMachine.IsInContactWithFloor();

@@ -822,7 +822,7 @@ MonoBehaviour:
   m_objectToLookAt: {fileID: 945022221}
   m_rotationSpeed: 2
   m_clampingXRotationValues: {x: -10, y: 60}
-  m_lerpSpeed: 0.05
+  m_lerpSpeed: 0.1
   m_zoomClampValues: {x: 4, y: 15}
 --- !u!114 &1452836274
 MonoBehaviour:
@@ -1224,6 +1224,11 @@ PrefabInstance:
       propertyPath: <MaxSidewaysVelocity>k__BackingField
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 4171572451824398806, guid: 5e68914ad4560fa4fb0c3949d2efa1bc,
+        type: 3}
+      propertyPath: <InAirAccelerationValue>k__BackingField
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 5008304811103111791, guid: 5e68914ad4560fa4fb0c3949d2efa1bc,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1274,6 +1279,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6892228702900340409, guid: 5e68914ad4560fa4fb0c3949d2efa1bc,
+        type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: 8a6be8daf7ce9fd4fbd5a987da0adda0,
+        type: 2}
     - target: {fileID: 7189764620190493799, guid: 5e68914ad4560fa4fb0c3949d2efa1bc,
         type: 3}
       propertyPath: m_Name

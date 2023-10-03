@@ -10,6 +10,8 @@ public class CharacterControllerStateMachine : MonoBehaviour
     public Animator Animator { get; private set; }
 
     [field: SerializeField]
+    public float InAirAccelerationValue { get; private set; } = 0.2f;
+    [field: SerializeField]
     public float AccelerationValue { get; private set; }
     [field: SerializeField]
     public float DecelerationValue { get; private set; } = 0.3f;
@@ -20,7 +22,7 @@ public class CharacterControllerStateMachine : MonoBehaviour
     [field: SerializeField]
     public float MaxBackwardVelocity { get; private set; }
     private Vector2 CurrentRelativeVelocity { get; set; }
-    public Vector2 CurrentDirectionalInputs { get; set; }
+    public Vector2 CurrentDirectionalInputs { get; private set; }
 
     [field: SerializeField]
     public float JumpIntensity { get; private set; } = 1000.0f;
@@ -35,6 +37,7 @@ public class CharacterControllerStateMachine : MonoBehaviour
         m_possibleStates = new List<CharacterState>();
         m_possibleStates.Add(new FreeState());
         m_possibleStates.Add(new JumpState());
+        m_possibleStates.Add(new FallingState());
     }
 
     // Start is called before the first frame update
@@ -60,6 +63,7 @@ public class CharacterControllerStateMachine : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        SetDirectionalInputs();
         m_currentState.OnFixedUpdate();
         Set2dRelativeVelocity();
     }
@@ -79,7 +83,7 @@ public class CharacterControllerStateMachine : MonoBehaviour
                 continue;
             }
 
-            if (state.CanEnter())
+            if (state.CanEnter(m_currentState))
             {
                 //Quitter le state actuel
                 m_currentState.OnExit();
@@ -138,5 +142,29 @@ public class CharacterControllerStateMachine : MonoBehaviour
         }
 
         return currentMaxVelocity;
+    }
+
+    public void SetDirectionalInputs()
+    {
+        CurrentDirectionalInputs = Vector2.zero;
+
+        //Pourquoi est-ce que cette méthode s'appelle Get même si elle n'a pas de valeur de retour?
+        // Ce n'est pas une erreur!
+        if (Input.GetKey(KeyCode.W))
+        {
+            CurrentDirectionalInputs += Vector2.up;
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            CurrentDirectionalInputs += Vector2.down;
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            CurrentDirectionalInputs += Vector2.left;
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            CurrentDirectionalInputs += Vector2.right;
+        }
     }
 }

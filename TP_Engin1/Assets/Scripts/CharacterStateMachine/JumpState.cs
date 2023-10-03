@@ -29,10 +29,14 @@ public class JumpState : CharacterState
         m_currentStateTimer -= Time.deltaTime;
     }
 
-    public override bool CanEnter()
+    public override bool CanEnter(IState currentState)
     {
-        //This must be run in Update absolutely
-        return Input.GetKeyDown(KeyCode.Space);
+        if (currentState is FreeState)
+        {
+            return Input.GetKeyDown(KeyCode.Space);
+        }
+
+        return false;
     }
 
     public override bool CanExit()
