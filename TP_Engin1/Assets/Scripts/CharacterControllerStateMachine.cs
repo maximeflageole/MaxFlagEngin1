@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterControllerStateMachine : MonoBehaviour
+public class CharacterControllerStateMachine : MonoBehaviour, IDamageable
 {
     public Camera Camera { get; private set; }
     [field:SerializeField]
@@ -23,6 +23,8 @@ public class CharacterControllerStateMachine : MonoBehaviour
     public float MaxBackwardVelocity { get; private set; }
     private Vector2 CurrentRelativeVelocity { get; set; }
     public Vector2 CurrentDirectionalInputs { get; private set; }
+    public bool OnHitStimuliReceived { get; set; } = false;
+    public bool OnStunStimuliReceived { get; set; } = false;
 
     [field: SerializeField]
     public float JumpIntensity { get; private set; } = 1000.0f;
@@ -38,6 +40,8 @@ public class CharacterControllerStateMachine : MonoBehaviour
         m_possibleStates.Add(new FreeState());
         m_possibleStates.Add(new JumpState());
         m_possibleStates.Add(new FallingState());
+        m_possibleStates.Add(new HitState());
+        m_possibleStates.Add(new GroundState());
     }
 
     // Start is called before the first frame update
@@ -165,6 +169,18 @@ public class CharacterControllerStateMachine : MonoBehaviour
         if (Input.GetKey(KeyCode.D))
         {
             CurrentDirectionalInputs += Vector2.right;
+        }
+    }
+
+    public void ReceiveDamage(EDamageType damageType)
+    {
+        if (damageType == EDamageType.Normal)
+        {
+            OnHitStimuliReceived = true;
+        }
+        if (damageType == EDamageType.Stunning)
+        {
+            OnStunStimuliReceived = true;
         }
     }
 }
