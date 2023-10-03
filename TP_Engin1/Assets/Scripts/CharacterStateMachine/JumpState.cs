@@ -12,6 +12,7 @@ public class JumpState : CharacterState
         //Effectuer le saut
         m_stateMachine.RB.AddForce(Vector3.up * m_stateMachine.JumpIntensity, ForceMode.Acceleration);
         m_currentStateTimer = STATE_EXIT_TIMER;
+        m_stateMachine.Animator.SetTrigger("Jump");
     }
 
     public override void OnExit()

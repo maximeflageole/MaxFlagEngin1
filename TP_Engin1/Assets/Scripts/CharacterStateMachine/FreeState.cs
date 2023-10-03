@@ -60,7 +60,7 @@ public class FreeState : CharacterState
         m_stateMachine.RB.AddForce(vectorOnFloor * m_stateMachine.AccelerationValue, ForceMode.Acceleration);
 
         var currentMaxSpeed = m_stateMachine.GetCurrentMaxSpeed();
-        Debug.Log(currentMaxSpeed);
+
         if (m_stateMachine.RB.velocity.magnitude > currentMaxSpeed)
         {
            m_stateMachine.RB.velocity = m_stateMachine.RB.velocity.normalized;

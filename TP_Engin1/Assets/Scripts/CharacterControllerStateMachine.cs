@@ -7,7 +7,7 @@ public class CharacterControllerStateMachine : MonoBehaviour
     [field:SerializeField]
     public Rigidbody RB { get; private set; }
     [field:SerializeField]
-    private Animator Animator { get; set; }
+    public Animator Animator { get; private set; }
 
     [field: SerializeField]
     public float AccelerationValue { get; private set; }
@@ -103,6 +103,7 @@ public class CharacterControllerStateMachine : MonoBehaviour
 
         Animator.SetFloat("MoveX", CurrentRelativeVelocity.x / GetCurrentMaxSpeed());
         Animator.SetFloat("MoveY", CurrentRelativeVelocity.y / GetCurrentMaxSpeed());
+        Animator.SetBool("TouchGround", m_floorTrigger.IsOnFloor);
     }
 
     private void Set2dRelativeVelocity()
