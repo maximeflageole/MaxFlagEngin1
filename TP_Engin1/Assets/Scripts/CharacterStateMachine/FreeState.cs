@@ -13,28 +13,72 @@ public class FreeState : CharacterState
 
     public override void OnFixedUpdate()
     {
-        var vectorOnFloor = Vector3.ProjectOnPlane(m_stateMachine.Camera.transform.forward, Vector3.up);
-        vectorOnFloor.Normalize();
+        FixedUpdateRotateWithCamera();
 
+         var inputVector2 = Vector2.zero;
+        GetInputs(ref inputVector2);
+        m_stateMachine.CurrentDirectionalInputs = inputVector2;
+
+        if (inputVector2 ==  Vector2.zero)
+        {
+            FixedUpdateQuickDeceleration();
+            return;
+        }
+
+        ApplyMovementsOnFloorFU(inputVector2);
+    }
+    
+    private void GetInputs(ref Vector2 inputVector2)
+    {
+        //Pourquoi est-ce que cette méthode s'appelle Get même si elle n'a pas de valeur de retour?
+        // Ce n'est pas une erreur!
         if (Input.GetKey(KeyCode.W))
         {
-            m_stateMachine.RB.AddForce(vectorOnFloor * m_stateMachine.AccelerationValue, ForceMode.Acceleration);
+            inputVector2 += Vector2.up;
         }
-        if (m_stateMachine.RB.velocity.magnitude > m_stateMachine.MaxVelocity)
+        if (Input.GetKey(KeyCode.S))
         {
-            m_stateMachine.RB.velocity = m_stateMachine.RB.velocity.normalized;
-            m_stateMachine.RB.velocity *= m_stateMachine.MaxVelocity;
+            inputVector2 += Vector2.down;
         }
+        if (Input.GetKey(KeyCode.A))
+        {
+            inputVector2 += Vector2.left;
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            inputVector2 += Vector2.right;
+        }
+    }
 
-        float forwardComponent = Vector3.Dot(m_stateMachine.RB.velocity, vectorOnFloor);
-        m_stateMachine.UpdateAnimatorValues(new Vector2(0, forwardComponent));
+    private void ApplyMovementsOnFloorFU(Vector2 inputVector2)
+    {
+        //TODO MF: Explications nécessaires de ce code pour les élèves
+        var vectorOnFloor = Vector3.ProjectOnPlane(m_stateMachine.Camera.transform.forward * inputVector2.y, Vector3.up);
+        vectorOnFloor += Vector3.ProjectOnPlane(m_stateMachine.Camera.transform.right * inputVector2.x, Vector3.up);
+        vectorOnFloor.Normalize();
 
-        //TODO 31 AOÛT:
-        //Appliquer les déplacements relatifs à la caméra dans les 3 autres directions
-        //Avoir des vitesses de déplacements maximales différentes vers les côtés et vers l'arrière
-        //Lorsqu'aucun input est mis, décélérer le personnage rapidement
+        m_stateMachine.RB.AddForce(vectorOnFloor * m_stateMachine.AccelerationValue, ForceMode.Acceleration);
 
-        //Debug.Log(m_stateMachine.RB.velocity.magnitude);
+        var currentMaxSpeed = m_stateMachine.GetCurrentMaxSpeed();
+        Debug.Log(currentMaxSpeed);
+        if (m_stateMachine.RB.velocity.magnitude > currentMaxSpeed)
+        {
+           m_stateMachine.RB.velocity = m_stateMachine.RB.velocity.normalized;
+           m_stateMachine.RB.velocity *= currentMaxSpeed;
+        }
+    }
+
+    private void FixedUpdateQuickDeceleration()
+    {
+        var oppositeDirectionForceToApply = -m_stateMachine.RB.velocity * 
+        m_stateMachine.DecelerationValue * Time.fixedDeltaTime;
+        m_stateMachine.RB.AddForce(oppositeDirectionForceToApply, ForceMode.Acceleration);
+    }
+
+    private void FixedUpdateRotateWithCamera()
+    {
+        var forwardCamOnFloor = Vector3.ProjectOnPlane(m_stateMachine.Camera.transform.forward, Vector3.up);
+        m_stateMachine.RB.transform.LookAt(forwardCamOnFloor + m_stateMachine.RB.transform.position);
     }
 
     public override void OnExit()

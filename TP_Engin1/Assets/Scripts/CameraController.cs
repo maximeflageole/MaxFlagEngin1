@@ -8,6 +8,11 @@ public class CameraController : MonoBehaviour
     private float m_rotationSpeed = 1.0f;
     [SerializeField]
     private Vector2 m_clampingXRotationValues = Vector2.zero;
+    private float m_desiredDistance = 10.0f;
+    [SerializeField]
+    private float m_lerpSpeed = 0.05f;
+    [SerializeField]
+    private Vector2 m_zoomClampValues = new Vector2(2.0f, 15.0f);
 
     // Update is called once per frame
     void Update()
@@ -17,9 +22,16 @@ public class CameraController : MonoBehaviour
         UpdateCameraScroll();
     }
 
+    private void FixedUpdateCameraLerp()
+    {
+        var desiredPosition = m_objectToLookAt.position - (transform.forward * m_desiredDistance);
+        transform.position = Vector3.Lerp(transform.position, desiredPosition, m_lerpSpeed);
+    }
+
     private void FixedUpdate()
     {
         MoveCameraInFrontOfObstructionsFUpdate();
+        FixedUpdateCameraLerp();
     }
 
     private void UpdateHorizontalMovements()
@@ -47,14 +59,8 @@ public class CameraController : MonoBehaviour
 
     private void UpdateCameraScroll()
     {
-        if (Input.mouseScrollDelta.y != 0)
-        {
-            //TODO: Faire une vérification selon la distance la plus proche ou la plus éloignée
-                //Que je souhaite entre ma caméra et mon objet
-
-            //TODO: Lerp plutôt que d'effectuer immédiatement la translation de la caméra
-            transform.Translate(Vector3.forward * Input.mouseScrollDelta.y, Space.Self);
-        }
+        m_desiredDistance += Input.mouseScrollDelta.y;
+        m_desiredDistance = Mathf.Clamp(m_desiredDistance, m_zoomClampValues.x, m_zoomClampValues.y);
     }
 
     private void MoveCameraInFrontOfObstructionsFUpdate()

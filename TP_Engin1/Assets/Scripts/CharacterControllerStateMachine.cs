@@ -12,7 +12,16 @@ public class CharacterControllerStateMachine : MonoBehaviour
     [field: SerializeField]
     public float AccelerationValue { get; private set; }
     [field: SerializeField]
-    public float MaxVelocity { get; private set; }
+    public float DecelerationValue { get; private set; } = 0.3f;
+    [field: SerializeField]
+    public float MaxForwardVelocity { get; private set; }
+    [field: SerializeField]
+    public float MaxSidewaysVelocity { get; private set; }
+    [field: SerializeField]
+    public float MaxBackwardVelocity { get; private set; }
+    private Vector2 CurrentRelativeVelocity { get; set; }
+    public Vector2 CurrentDirectionalInputs { get; set; }
+
     [field: SerializeField]
     public float JumpIntensity { get; private set; } = 1000.0f;
 
@@ -45,12 +54,14 @@ public class CharacterControllerStateMachine : MonoBehaviour
     {
         m_currentState.OnUpdate();
         TryStateTransition();
+        UpdateAnimatorValues();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         m_currentState.OnFixedUpdate();
+        Set2dRelativeVelocity();
     }
 
     private void TryStateTransition()
@@ -85,14 +96,46 @@ public class CharacterControllerStateMachine : MonoBehaviour
         return m_floorTrigger.IsOnFloor;
     }
 
-    public void UpdateAnimatorValues(Vector2 movementVecValue)
+    private void UpdateAnimatorValues()
     {
         //Aller chercher ma vitesse actuelle
         //Communiquer directement avec mon Animator
 
-        movementVecValue = new Vector2(movementVecValue.x, movementVecValue.y / MaxVelocity);
+        Animator.SetFloat("MoveX", CurrentRelativeVelocity.x / GetCurrentMaxSpeed());
+        Animator.SetFloat("MoveY", CurrentRelativeVelocity.y / GetCurrentMaxSpeed());
+    }
 
-        Animator.SetFloat("MoveX", movementVecValue.x);
-        Animator.SetFloat("MoveY", movementVecValue.y);
+    private void Set2dRelativeVelocity()
+    {
+        Vector3 relativeVelocity = RB.transform.InverseTransformDirection(RB.velocity);
+
+        CurrentRelativeVelocity = new Vector2(relativeVelocity.x, relativeVelocity.z);
+    }
+
+    public float GetCurrentMaxSpeed()
+    {
+        //On va aller chercher la composante réelle de nos vitesses de manière très simple.
+        //On va prendre notre vitesse en z (l'avant/arrière) et en x (côtés) et notre
+        // vitesse actuelle réelle dépendra du résultat
+
+        if (Mathf.Approximately(CurrentDirectionalInputs.magnitude, 0))
+        {
+            return MaxForwardVelocity;
+        }
+
+        var normalizedInputs = CurrentDirectionalInputs.normalized;
+
+        var currentMaxVelocity = Mathf.Pow(normalizedInputs.x, 2) * MaxSidewaysVelocity;
+
+        if (normalizedInputs.y > 0)
+        {
+            currentMaxVelocity += Mathf.Pow(normalizedInputs.y, 2) * MaxForwardVelocity;
+        }
+        else
+        {
+            currentMaxVelocity += Mathf.Pow(normalizedInputs.y, 2) * MaxBackwardVelocity;
+        }
+
+        return currentMaxVelocity;
     }
 }
