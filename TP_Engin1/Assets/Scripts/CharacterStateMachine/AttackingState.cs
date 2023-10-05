@@ -1,21 +1,20 @@
 using UnityEngine;
 
-public class HitState : CharacterState
+public class AttackingState : CharacterState
 {
-    private const float HIT_DURATION = 0.4f;
+    private const float ATTACK_DURATION = 0.6f;
     private float m_currentStateDuration;
-
+    
     public override void OnEnter()
     {
-        m_currentStateDuration = HIT_DURATION;
-        m_stateMachine.OnHitStimuliReceived = false;
-        m_stateMachine.Animator.SetTrigger("OnHit");
-        Debug.Log("Enter state: HitState\n");
+        m_stateMachine.Animator.SetTrigger("Attacks");
+        m_currentStateDuration = ATTACK_DURATION;
+        Debug.Log("Enter state: AttackingState\n");
     }
 
     public override void OnExit()
     {
-        Debug.Log("Exit state: HitState\n");
+        Debug.Log("Exit state: AttackingState\n");
     }
 
     public override void OnFixedUpdate()
@@ -30,7 +29,11 @@ public class HitState : CharacterState
 
     public override bool CanEnter(IState currentState)
     {
-        return m_stateMachine.OnHitStimuliReceived;
+        if (currentState is FreeState)
+        {
+            return Input.GetKeyDown(KeyCode.Mouse0);
+        }
+        return false;
     }
 
     public override bool CanExit()

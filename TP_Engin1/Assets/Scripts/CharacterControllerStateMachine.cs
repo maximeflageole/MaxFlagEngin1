@@ -42,6 +42,7 @@ public class CharacterControllerStateMachine : MonoBehaviour, IDamageable
         m_possibleStates.Add(new FallingState());
         m_possibleStates.Add(new HitState());
         m_possibleStates.Add(new GroundState());
+        m_possibleStates.Add(new AttackingState());
     }
 
     // Start is called before the first frame update
@@ -182,5 +183,12 @@ public class CharacterControllerStateMachine : MonoBehaviour, IDamageable
         {
             OnStunStimuliReceived = true;
         }
+    }
+
+    public void FixedUpdateQuickDeceleration()
+    {
+        var oppositeDirectionForceToApply = -RB.velocity *
+        DecelerationValue * Time.fixedDeltaTime;
+        RB.AddForce(oppositeDirectionForceToApply, ForceMode.Acceleration);
     }
 }

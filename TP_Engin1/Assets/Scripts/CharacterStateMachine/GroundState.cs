@@ -22,7 +22,7 @@ public class GroundState : CharacterState
 
     public override void OnFixedUpdate()
     {
-        FixedUpdateQuickDeceleration();
+        m_stateMachine.FixedUpdateQuickDeceleration();
     }
 
     public override void OnUpdate()

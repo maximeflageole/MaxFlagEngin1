@@ -22,16 +22,16 @@ public class CameraController : MonoBehaviour
         UpdateCameraScroll();
     }
 
+    private void FixedUpdate()
+    {
+        FixedUpdateCameraLerp();
+        MoveCameraInFrontOfObstructionsFUpdate();
+    }
+
     private void FixedUpdateCameraLerp()
     {
         var desiredPosition = m_objectToLookAt.position - (transform.forward * m_desiredDistance);
         transform.position = Vector3.Lerp(transform.position, desiredPosition, m_lerpSpeed);
-    }
-
-    private void FixedUpdate()
-    {
-        MoveCameraInFrontOfObstructionsFUpdate();
-        FixedUpdateCameraLerp();
     }
 
     private void UpdateHorizontalMovements()
